@@ -4,12 +4,12 @@ import {useSelector, useDispatch} from 'react-redux';
 import {selectExercises, addExercise} from './createExerciseSlice';
 
 //TODO Create a style class or object
-const CreateExercise = () => {
+const CreateExerciseScreen = () => {
   const exercises = useSelector(selectExercises);
   const dispatch = useDispatch();
   const [exerciseName, setExerciseName] = useState('');
 
-  const renderItem = ({item}) => <Item exerciseName={item.exerciseName} />;
+  const renderItem = ({item}) => <Item exercise={item} />;
 
   return (
     <View>
@@ -21,27 +21,23 @@ const CreateExercise = () => {
       <Button
         title="Add"
         onPress={() => {
-          dispatch(
-            addExercise({
-              //TODO: I need to think how to pass data more structured and see if this is working
-              exerciseName: exerciseName,
-            }),
-          );
+          dispatch(addExercise(exerciseName));
+          setExerciseName('');
         }}
       />
       <FlatList
         data={exercises}
-        keyExtractor={item => item.exerciseName}
+        keyExtractor={item => item.id}
         renderItem={renderItem}
       />
     </View>
   );
 };
 
-const Item = ({exerciseName}) => (
+const Item = ({exercise}) => (
   <View>
-    <Text>{exerciseName}</Text>
+    <Text>{exercise.name}</Text>
   </View>
 );
 
-export default CreateExercise;
+export default CreateExerciseScreen;
