@@ -4,20 +4,22 @@ import {useSelector, useDispatch, shallowEqual} from 'react-redux';
 import {
   selectExercises,
   addExercise,
-  getMuscles,
-  selectMuscles,
+  selectCatalog,
+  getCatalog,
+  getExercises,
 } from './createExerciseSlice';
 
 //TODO Create a style class or object
 const CreateExerciseScreen = () => {
   const exercises = useSelector(selectExercises);
-  const muscles = useSelector(selectMuscles, shallowEqual);
+  const catalog = useSelector(selectCatalog, shallowEqual);
   const dispatch = useDispatch();
   const [exerciseName, setExerciseName] = useState('');
 
   useEffect(() => {
-    if (muscles.length === 0) {
-      dispatch(getMuscles());
+    dispatch(getCatalog());
+    if (exercises.length === 0) {
+      dispatch(getExercises());
     }
   });
 
@@ -36,7 +38,17 @@ const CreateExerciseScreen = () => {
           dispatch(
             addExercise({
               name: exerciseName,
-              muscles: [muscles[0]],
+              muscles: [
+                catalog.muscles[0],
+                catalog.muscles[1],
+                catalog.muscles[2],
+                catalog.muscles[3],
+              ],
+              equipments: [
+                catalog.equipment[0],
+                catalog.equipment[1],
+                catalog.equipment[2],
+              ],
             }),
           );
           setExerciseName('');
@@ -54,7 +66,8 @@ const CreateExerciseScreen = () => {
 const Item = ({exercise}) => (
   <View>
     <Text>{exercise.name}</Text>
-    <Text>{`${exercise.muscles[0].name}`}</Text>
+    <Text>Muscles: {exercise.muscles.length}</Text>
+    <Text>Equipment: {exercise.equipment.length}</Text>
     <Text>______</Text>
   </View>
 );
