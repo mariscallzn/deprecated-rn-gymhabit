@@ -1,24 +1,38 @@
 import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
 import {logger} from '../../inf/logger';
-import {createExercise, getExercises} from './repositoryExercise';
+import {createExercise, queryMuscles} from './repositoryExercise';
 
 export const createExerciseSlice = createSlice({
   name: 'createExercise',
   initialState: {
     exercises: [],
+    muscles: [],
   },
   reducers: {},
   extraReducers(builder) {
     builder
+      //Get Muscles
+      .addCase(getMuscles.pending, (_, action) => {
+        logger(`${action.type}`, null);
+      })
+      .addCase(getMuscles.fulfilled, (state, action) => {
+        logger(`${action.type}`, null);
+        state.muscles = action.payload;
+      })
+      .addCase(getMuscles.rejected, (_, action) => {
+        logger(`${action.type} ${action.payload}`, null);
+      })
+
+      //Add Exercise
+      .addCase(addExercise.pending, (_, action) => {
+        logger(`${action.type}`, null);
+      })
       .addCase(addExercise.fulfilled, (state, action) => {
-        logger('addExercise.fulfilled', null);
+        logger(`${action.type}`, null);
         state.exercises.push(action.payload);
       })
-      .addCase(addExercise.rejected, action => {
-        logger('addExercise.rejected', action.error.message);
-      })
-      .addCase(addExercise.pending, state => {
-        logger('addExercise.pending', null);
+      .addCase(addExercise.rejected, (_, action) => {
+        logger(`${action.type} ${action.payload}`, null);
       });
   },
 });
@@ -26,18 +40,31 @@ export const createExerciseSlice = createSlice({
 //Async work
 export const addExercise = createAsyncThunk(
   'exercises/addExercise',
-  //TODO: Pass the whole object
-  async exerciseName => {
-    const tmp = await getExercises();
-    const result = await createExercise({
-      name: exerciseName,
-    });
-    return result;
+  async (exercise, {rejectWithValue}) => {
+    try {
+      const result = await createExercise(exercise);
+      return result;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  },
+);
+
+export const getMuscles = createAsyncThunk(
+  'muscles/getMuscles',
+  async (_, {rejectWithValue}) => {
+    try {
+      const result = await queryMuscles();
+      return result;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
   },
 );
 
 //Selector that conects to hook useSelector()
 export const selectExercises = state => state.createExercise.exercises;
+export const selectMuscles = state => state.createExercise.muscles;
 
 // //Action objects
 // export const {addExercise} = createExerciseSlice.actions;

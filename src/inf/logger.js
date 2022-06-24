@@ -5,8 +5,6 @@
  */
 export const logger = (message, any) => {
   console.log(
-    `Logger: ${message} ${
-      any != null ? ', Object: ' + JSON.stringify(any) : ''
-    }`,
+    `Logger: ${message} ${any != null ? '-> ' + JSON.stringify(any) : ''}`,
   );
 };

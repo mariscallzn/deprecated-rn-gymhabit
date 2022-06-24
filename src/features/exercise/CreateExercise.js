@@ -1,13 +1,25 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Text, TextInput, View, Button, FlatList} from 'react-native';
-import {useSelector, useDispatch} from 'react-redux';
-import {selectExercises, addExercise} from './createExerciseSlice';
+import {useSelector, useDispatch, shallowEqual} from 'react-redux';
+import {
+  selectExercises,
+  addExercise,
+  getMuscles,
+  selectMuscles,
+} from './createExerciseSlice';
 
 //TODO Create a style class or object
 const CreateExerciseScreen = () => {
   const exercises = useSelector(selectExercises);
+  const muscles = useSelector(selectMuscles, shallowEqual);
   const dispatch = useDispatch();
   const [exerciseName, setExerciseName] = useState('');
+
+  useEffect(() => {
+    if (muscles.length === 0) {
+      dispatch(getMuscles());
+    }
+  });
 
   const renderItem = ({item}) => <Item exercise={item} />;
 
@@ -21,7 +33,12 @@ const CreateExerciseScreen = () => {
       <Button
         title="Add"
         onPress={() => {
-          dispatch(addExercise(exerciseName));
+          dispatch(
+            addExercise({
+              name: exerciseName,
+              muscles: [muscles[0]],
+            }),
+          );
           setExerciseName('');
         }}
       />
@@ -37,6 +54,8 @@ const CreateExerciseScreen = () => {
 const Item = ({exercise}) => (
   <View>
     <Text>{exercise.name}</Text>
+    <Text>{`${exercise.muscles[0].name}`}</Text>
+    <Text>______</Text>
   </View>
 );
 

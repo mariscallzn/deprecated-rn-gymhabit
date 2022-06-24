@@ -1,6 +1,4 @@
 import Realm from 'realm';
-import {v4 as uuid} from 'uuid';
-import {logger} from '../inf/logger';
 
 export const TABLES = {
   EXERCISE: 'Exercise',
@@ -53,43 +51,10 @@ const dbConfig = {
   schema: databaseSchema,
 };
 
-/**
- * Initial set up for the database
- * - Pre-population of data
- */
-export async function dbSetup() {
+export async function openDB() {
   Realm.copyBundledRealmFiles();
   const realm = await Realm.open(dbConfig);
-  realm.close();
-}
-
-export async function select(table, filter, converter) {
-  const realm = await Realm.open(dbConfig);
-  const queryResult = realm.objects(table);
-  logger(`DB: QueryResult from ${table}`, queryResult);
-  if (filter != null) {
-  }
-  realm.close();
-}
-
-/**
- * Insert data to a specific table
- * @param {TABLES} table Table name from Schema
- * @param {object} object Object that will be save to the database
- * @param {function} converter converter that decouple db's objects to plain objects
- * @returns The inserted object converted by the "converter" function
- */
-export async function create(table, object, converter) {
-  const realm = await Realm.open(dbConfig);
-  let result;
-  realm.write(() => {
-    result = realm.create(table, {...object, _id: uuid()});
-  });
-  const resultConverted = converter(result);
-  logger(`DB: Item inserted on ${table}`, result);
-  realm.close();
-  logger(`DB: Converter ${converter}`, resultConverted);
-  return resultConverted;
+  return realm;
 }
 
 // export async function prepareBundle() {
