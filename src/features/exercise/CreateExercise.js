@@ -44,7 +44,7 @@ const CreateExerciseScreen = () => {
                 catalog.muscles[2],
                 catalog.muscles[3],
               ],
-              equipments: [
+              equipment: [
                 catalog.equipment[0],
                 catalog.equipment[1],
                 catalog.equipment[2],

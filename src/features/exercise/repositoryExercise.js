@@ -15,7 +15,7 @@ export async function createExercise(exercise) {
       muscles.push(item);
     });
 
-    exercise.equipments.forEach(e => {
+    exercise.equipment.forEach(e => {
       const item = db.objectForPrimaryKey(TABLES.EQUIPMENT, e._id);
       equipment.push(item);
     });
@@ -26,8 +26,7 @@ export async function createExercise(exercise) {
         name: exercise.name,
         _id: uuid(),
         muscles: muscles,
-        //TODO Fix naming
-        equipments: equipment,
+        equipment: equipment,
       });
     });
     const uiModel = uiExerciseConverter(result);
@@ -43,10 +42,7 @@ export async function queryExercises() {
   try {
     const db = await openDB();
     const result = db.objects(TABLES.EXERCISE);
-    logger(`DB Exe: ${result[0].equipments[0].name}`);
-    const tmp = uiExercisesConverter(result);
-    logger('TMPO', tmp);
-    return tmp;
+    return uiExercisesConverter(result);
   } catch (error) {
     logger(`${TAG}:queryExercises: ${error}`, null);
     throw error;
@@ -94,7 +90,7 @@ const uiExerciseConverter = exercise => {
     muscles: exercise.muscles.map(i => {
       return {id: i._id, name: i.name};
     }),
-    equipment: exercise.equipments.map(i => {
+    equipment: exercise.equipment.map(i => {
       return {id: i._id, name: i.name};
     }),
   };
