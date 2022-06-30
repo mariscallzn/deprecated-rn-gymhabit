@@ -1,6 +1,12 @@
 import {openDB, TABLES} from '../../database/gymhabitDB';
 import {v4 as uuid} from 'uuid';
 import {logger} from '../../inf/logger';
+import {
+  uiEquipmentConverter,
+  uiExerciseConverter,
+  convertList,
+  uiMuscleConverter,
+} from '../../inf/dbConverters';
 
 const TAG = 'REPO EXERCISE';
 
@@ -42,7 +48,7 @@ export async function queryExercises() {
   try {
     const db = await openDB();
     const result = db.objects(TABLES.EXERCISE);
-    return uiExercisesConverter(result);
+    return convertList(result, uiExerciseConverter);
   } catch (error) {
     logger(`${TAG}:queryExercises: ${error}`, null);
     throw error;
@@ -68,52 +74,4 @@ const uiCatalogConverter = (uiMusclesList, uiEquipmentList) => {
     muscles: uiMusclesList,
     equipment: uiEquipmentList,
   };
-};
-
-const uiExercisesConverter = exercises => {
-  const uiModelList = [];
-  exercises.forEach(element => {
-    uiModelList.push(uiExerciseConverter(element));
-  });
-  return uiModelList;
-};
-
-/**
- * Transfrom database object to UiObject
- * @param {*} exercise Database object
- * @returns UiObject
- */
-const uiExerciseConverter = exercise => {
-  return {
-    id: exercise._id,
-    name: exercise.name,
-    muscles: exercise.muscles.map(i => {
-      return {id: i._id, name: i.name};
-    }),
-    equipment: exercise.equipment.map(i => {
-      return {id: i._id, name: i.name};
-    }),
-  };
-};
-
-const uiEquipmentConverter = equipment => {
-  const uiModelList = [];
-  equipment.forEach(element => {
-    uiModelList.push({
-      _id: element._id,
-      name: element.name,
-    });
-  });
-  return uiModelList;
-};
-
-const uiMuscleConverter = muscles => {
-  const uiModelList = [];
-  muscles.forEach(element => {
-    uiModelList.push({
-      _id: element._id,
-      name: element.name,
-    });
-  });
-  return uiModelList;
 };

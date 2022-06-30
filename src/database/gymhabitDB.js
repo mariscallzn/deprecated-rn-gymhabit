@@ -3,7 +3,6 @@ import Realm from 'realm';
 export const TABLES = {
   //Grouping tables
   //Day -> Workouts -> Workout -> Groups -> Group -> Activities -> Activity -> Tasks -> Task
-  DAY: 'Day',
   WORKOUT: 'Workout',
   GROUP: 'Group',
   ACTIVITY: 'Activity',
@@ -24,15 +23,6 @@ export const TABLES = {
 //Schemas
 const databaseSchema = [
   {
-    name: TABLES.DAY,
-    primaryKey: '_id',
-    properties: {
-      _id: 'string',
-      date: 'date',
-      workouts: TABLES.WORKOUT + '[]',
-    },
-  },
-  {
     name: TABLES.WORKOUT,
     primaryKey: '_id',
     properties: {
@@ -42,6 +32,8 @@ const databaseSchema = [
       reactions: 'string[]',
       notes: 'string[]',
       completed: 'bool',
+      isDraft: 'bool',
+      scheduleFor: 'date',
     },
   },
   {
