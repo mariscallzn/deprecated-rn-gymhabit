@@ -21,40 +21,45 @@ export async function createWorkout(workout) {
   try {
     const db = await openDB();
     const dbActivities = [];
-    workout.exercises.forEach(element => {
-      const dbExercise = db.objectForPrimaryKey(TABLES.EXERCISE, element.id);
-      const dbTask = db.create(TABLES.TASK, {
-        _id: uuid(),
-        exercise: dbExercise,
-        e_sets: [],
+    let dbWorkout;
+    db.write(() => {
+      workout.exercises.forEach(element => {
+        const dbExercise = db.objectForPrimaryKey(TABLES.EXERCISE, element.id);
+        const dbTask = db.create(TABLES.TASK, {
+          _id: uuid(),
+          exercise: dbExercise,
+          e_sets: [],
+        });
+        const dbActivity = db.create(TABLES.ACTIVITY, {
+          _id: uuid(),
+          tasks: [dbTask],
+          reactions: [],
+          notes: [],
+          completed: false,
+        });
+        dbActivities.push(dbActivity);
       });
-      const dbActivity = db.create(TABLES.ACTIVITY, {
+
+      const dbGroup = db.create(TABLES.GROUP, {
         _id: uuid(),
-        tasks: [dbTask],
+        name: '',
+        activities: dbActivities,
+      });
+
+      dbWorkout = db.create(TABLES.WORKOUT, {
+        _id: uuid(),
+        name: '',
+        groups: [dbGroup],
         reactions: [],
-        notes: '',
+        notes: [],
         completed: false,
+        isDraft: true,
+        scheduleFor: workout.date,
       });
-      dbActivities.push(dbActivity);
     });
-
-    const dbGroup = db.create(TABLES.GROUP, {
-      _id: uuid(),
-      name: '',
-      activities: dbActivities,
-    });
-
-    const dbWorkout = db.create(TABLES.WORKOUT, {
-      _id: uuid(),
-      name: '',
-      groups: [dbGroup],
-      reactions: [],
-      notes: [],
-      completed: false,
-      isDraft: true,
-      scheduleFor: workout.date,
-    });
-    return uiWorkoutConverter(dbWorkout);
+    const tmp = uiWorkoutConverter(dbWorkout);
+    logger(`${TAG}:createWorkout`, tmp);
+    return tmp;
   } catch (error) {
     logger(`${TAG}:createWorkout: ${error}`, null);
     throw error;
