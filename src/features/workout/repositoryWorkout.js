@@ -1,7 +1,7 @@
 import {openDB, TABLES} from '../../database/gymhabitDB';
 import {v4 as uuid} from 'uuid';
 import {logger} from '../../inf/logger';
-import {uiWorkoutConverter} from '../../inf/dbConverters';
+import {convertList, uiWorkoutConverter} from '../../inf/dbConverters';
 
 const TAG = 'REPO WORKOUT';
 
@@ -57,11 +57,33 @@ export async function createWorkout(workout) {
         scheduleFor: workout.date,
       });
     });
-    const tmp = uiWorkoutConverter(dbWorkout);
-    logger(`${TAG}:createWorkout`, tmp);
-    return tmp;
+    return uiWorkoutConverter(dbWorkout);
   } catch (error) {
     logger(`${TAG}:createWorkout: ${error}`, null);
     throw error;
   }
+}
+
+export async function queryWorkoutByDate(date) {
+  const db = await openDB();
+  const date00 = new Date(
+    date.getFullYear(),
+    date.getMonth(),
+    date.getDate(),
+    0,
+    0,
+    0,
+  );
+  const date23 = new Date(
+    date.getFullYear(),
+    date.getMonth(),
+    date.getDate(),
+    23,
+    59,
+    59,
+  );
+  const dbWorkout = db
+    .objects(TABLES.WORKOUT)
+    .filtered('scheduleFor between {$0,$1}', date00, date23);
+  return convertList(dbWorkout, uiWorkoutConverter);
 }

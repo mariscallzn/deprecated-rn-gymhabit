@@ -8,6 +8,7 @@ import {
   getCatalog,
   getExercises,
   addWorkout,
+  getWorkoutByDate,
 } from './createExerciseSlice';
 
 //TODO Create a style class or object
@@ -64,6 +65,12 @@ const CreateExerciseScreen = () => {
               exercises: exercises,
             }),
           );
+        }}
+      />
+      <Button
+        title="Query Workout By Date"
+        onPress={() => {
+          dispatch(getWorkoutByDate(new Date()));
         }}
       />
       <FlatList

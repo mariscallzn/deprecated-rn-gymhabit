@@ -1,6 +1,6 @@
 import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
 import {logger} from '../../inf/logger';
-import {createWorkout} from '../workout/repositoryWorkout';
+import {createWorkout, queryWorkoutByDate} from '../workout/repositoryWorkout';
 import {
   createExercise,
   queryCatalog,
@@ -71,6 +71,17 @@ export const createExerciseSlice = createSlice({
       })
       .addCase(addWorkout.rejected, (_, action) => {
         logger(`${action.type} ${action.payload}`, null);
+      })
+
+      //TODO: Remove it from here
+      .addCase(getWorkoutByDate.pending, (_, action) => {
+        logger(`${action.type}`, null);
+      })
+      .addCase(getWorkoutByDate.fulfilled, (state, action) => {
+        logger(`${action.type}`, null);
+      })
+      .addCase(getWorkoutByDate.rejected, (_, action) => {
+        logger(`${action.type} ${action.payload}`, null);
       });
   },
 });
@@ -93,6 +104,18 @@ export const addWorkout = createAsyncThunk(
   async (workout, {rejectWithValue}) => {
     try {
       const result = await createWorkout(workout);
+      return result;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  },
+);
+
+export const getWorkoutByDate = createAsyncThunk(
+  'workouts/getWorkoutByDate',
+  async (date, {rejectWithValue}) => {
+    try {
+      const result = await queryWorkoutByDate(date);
       return result;
     } catch (error) {
       return rejectWithValue(error.message);
