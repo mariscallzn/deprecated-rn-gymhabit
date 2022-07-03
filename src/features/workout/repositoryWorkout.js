@@ -1,7 +1,12 @@
 import {openDB, TABLES} from '../../database/gymhabitDB';
 import {v4 as uuid} from 'uuid';
 import {logger} from '../../inf/logger';
-import {convertList, uiWorkoutConverter} from '../../inf/dbConverters';
+import {
+  convertList,
+  uiESetConverter,
+  uiTaskConverter,
+  uiWorkoutConverter,
+} from '../../inf/dbConverters';
 
 const TAG = 'REPO WORKOUT';
 
@@ -85,5 +90,61 @@ export async function queryWorkoutByDate(date) {
   const dbWorkout = db
     .objects(TABLES.WORKOUT)
     .filtered('scheduleFor between {$0,$1}', date00, date23);
-  return convertList(dbWorkout, uiWorkoutConverter);
+  const tmp = convertList(dbWorkout, uiWorkoutConverter);
+  logger(`WorkOut:`, tmp);
+  return tmp;
+}
+
+// export async function completeWorkoutById(id) {
+//   const db = await openDB();
+//   db.write(() => {
+//     const dbWorkout = db.objectForPrimaryKey(TABLES.WORKOUT, id);
+//     dbWorkout.completed = true;
+//   });
+//   return;
+// }
+
+/**
+ *
+ * @param {TABLES.TASK} task
+ * @returns
+ */
+export async function updateTask(task) {
+  try {
+    const db = await openDB();
+    let result;
+    db.write(() => {
+      const dbTask = db.objectForPrimaryKey(TABLES.TASK, task.id);
+      const eSets = dbTask.e_sets;
+      task.eSets.forEach(element => {
+        if (element.id == null) {
+          eSets.push({...element, _id: uuid()});
+          dbTask.e_sets = eSets;
+        } else if (element.delete) {
+          let dbESet = db.objectForPrimaryKey(TABLES.ESET, element.id);
+          db.delete(dbESet);
+          dbESet = null;
+        }
+      });
+      result = uiTaskConverter(dbTask);
+    });
+    return result;
+  } catch (error) {
+    logger(`${TAG}:updateTask: ${error}`, null);
+    throw error;
+  }
+}
+
+export async function updateESet(eSet) {
+  const db = await openDB();
+  let result;
+  db.write(() => {
+    const updatedResult = db.create(
+      TABLES.ESET,
+      {...eSet, _id: eSet.id, weight_unit: eSet.weightUnit},
+      'modified',
+    );
+    result = uiESetConverter(updatedResult);
+  });
+  return result;
 }

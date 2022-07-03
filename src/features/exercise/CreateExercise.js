@@ -9,6 +9,8 @@ import {
   getExercises,
   addWorkout,
   getWorkoutByDate,
+  updateTaskS,
+  updateESetS,
 } from './createExerciseSlice';
 
 //TODO Create a style class or object
@@ -71,6 +73,38 @@ const CreateExerciseScreen = () => {
         title="Query Workout By Date"
         onPress={() => {
           dispatch(getWorkoutByDate(new Date()));
+        }}
+      />
+      <Button
+        title="Update Task"
+        onPress={() => {
+          dispatch(
+            updateTaskS({
+              id: '5a779d59-89bd-4a9d-97ea-8533616dc758',
+              eSets: [
+                {
+                  weight: 40,
+                  weight_unit: 'lb',
+                  reps: 12,
+                  rest: 30,
+                },
+              ],
+            }),
+          );
+        }}
+      />
+      <Button
+        title="Update Set"
+        onPress={() => {
+          dispatch(
+            updateESetS({
+              id: '66e43730-1fd2-4f31-9548-8eb54baf07a7',
+              weight: 30,
+              weightUnit: 'Km',
+              reps: 15,
+              rest: 30,
+            }),
+          );
         }}
       />
       <FlatList

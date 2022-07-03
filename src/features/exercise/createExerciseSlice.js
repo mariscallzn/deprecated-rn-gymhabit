@@ -1,6 +1,11 @@
 import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
 import {logger} from '../../inf/logger';
-import {createWorkout, queryWorkoutByDate} from '../workout/repositoryWorkout';
+import {
+  createWorkout,
+  queryWorkoutByDate,
+  updateESet,
+  updateTask,
+} from '../workout/repositoryWorkout';
 import {
   createExercise,
   queryCatalog,
@@ -82,6 +87,28 @@ export const createExerciseSlice = createSlice({
       })
       .addCase(getWorkoutByDate.rejected, (_, action) => {
         logger(`${action.type} ${action.payload}`, null);
+      })
+
+      //TODO: Remove it from here
+      .addCase(updateTaskS.pending, (_, action) => {
+        logger(`${action.type}`, null);
+      })
+      .addCase(updateTaskS.fulfilled, (state, action) => {
+        logger(`${action.type}`, null);
+      })
+      .addCase(updateTaskS.rejected, (_, action) => {
+        logger(`${action.type} ${action.payload}`, null);
+      })
+
+      //TODO: Remove it from here
+      .addCase(updateESetS.pending, (_, action) => {
+        logger(`${action.type}`, null);
+      })
+      .addCase(updateESetS.fulfilled, (state, action) => {
+        logger(`${action.type}`, null);
+      })
+      .addCase(updateESetS.rejected, (_, action) => {
+        logger(`${action.type} ${action.payload}`, null);
       });
   },
 });
@@ -116,6 +143,30 @@ export const getWorkoutByDate = createAsyncThunk(
   async (date, {rejectWithValue}) => {
     try {
       const result = await queryWorkoutByDate(date);
+      return result;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  },
+);
+
+export const updateTaskS = createAsyncThunk(
+  'workouts/updateTask',
+  async (task, {rejectWithValue}) => {
+    try {
+      const result = await updateTask(task);
+      return result;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  },
+);
+
+export const updateESetS = createAsyncThunk(
+  'workouts/updateESetS',
+  async (eSet, {rejectWithValue}) => {
+    try {
+      const result = await updateESet(eSet);
       return result;
     } catch (error) {
       return rejectWithValue(error.message);
