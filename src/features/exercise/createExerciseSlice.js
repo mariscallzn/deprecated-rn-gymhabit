@@ -79,17 +79,6 @@ export const createExerciseSlice = createSlice({
       })
 
       //TODO: Remove it from here
-      .addCase(getWorkoutByDate.pending, (_, action) => {
-        logger(`${action.type}`, null);
-      })
-      .addCase(getWorkoutByDate.fulfilled, (state, action) => {
-        logger(`${action.type}`, null);
-      })
-      .addCase(getWorkoutByDate.rejected, (_, action) => {
-        logger(`${action.type} ${action.payload}`, null);
-      })
-
-      //TODO: Remove it from here
       .addCase(updateTaskS.pending, (_, action) => {
         logger(`${action.type}`, null);
       })
