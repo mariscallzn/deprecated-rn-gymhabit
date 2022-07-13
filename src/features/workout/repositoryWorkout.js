@@ -1,14 +1,11 @@
 import {openDB, TABLES} from '../../database/gymhabitDB';
 import {v4 as uuid} from 'uuid';
-import {logger} from '../../inf/logger';
 import {
   convertList,
   uiESetConverter,
   uiTaskConverter,
   uiWorkoutConverter,
 } from '../../inf/dbConverters';
-
-const TAG = 'REPO WORKOUT';
 
 //The goal, to select which exercises to do today
 //Add set per exercise
@@ -64,7 +61,6 @@ export async function createWorkout(workout) {
     });
     return uiWorkoutConverter(dbWorkout);
   } catch (error) {
-    logger(`${TAG}:createWorkout: ${error}`, null);
     throw error;
   }
 }
@@ -91,7 +87,6 @@ export async function queryWorkoutByDate(date) {
     .objects(TABLES.WORKOUT)
     .filtered('scheduleFor between {$0,$1}', date00, date23);
   const tmp = convertList(dbWorkout, uiWorkoutConverter);
-  logger(`WorkOut:`, tmp);
   return tmp;
 }
 
@@ -130,7 +125,6 @@ export async function updateTask(task) {
     });
     return result;
   } catch (error) {
-    logger(`${TAG}:updateTask: ${error}`, null);
     throw error;
   }
 }

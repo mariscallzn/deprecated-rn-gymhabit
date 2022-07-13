@@ -83,12 +83,21 @@ export const uiWorkoutConverter = workout => {
     id: workout._id,
     name: workout.name,
     groups: convertList(workout.groups, uiGroupConverter),
-    reactions: workout.reactions,
-    notes: workout.notes,
+    reactions: convertList(workout.reactions, convertNativeList),
+    notes: convertList(workout.notes, convertNativeList),
     completed: workout.completed,
     isDraft: workout.isDraft,
-    scheduleFor: workout.scheduleFor,
+    scheduleFor: JSON.stringify(workout.scheduleFor),
   };
+};
+
+//TODO Review if this actually works
+const convertNativeList = nativeList => {
+  const items = [];
+  nativeList.forEach(element => {
+    items.push(JSON.stringify(element));
+  });
+  return items;
 };
 
 export const convertList = (items, converter) => {

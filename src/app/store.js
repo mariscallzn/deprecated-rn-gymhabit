@@ -7,4 +7,5 @@ export default configureStore({
     createExercise: createExerciseReducer,
     main: mainReducer,
   },
+  devTools: process.env.NODE_ENV !== 'production',
 });

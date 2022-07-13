@@ -1,11 +1,8 @@
-import React, {useEffect, useState} from 'react';
-import {useDispatch} from 'react-redux';
+import React, {useState} from 'react';
 import {
   Text,
-  TextInput,
   View,
   TouchableOpacity,
-  Button,
   FlatList,
   StyleSheet,
   Dimensions,
@@ -39,10 +36,35 @@ const DAY_DATA = [
   },
 ];
 
-const MainScreen = () => {
-  const dispatch = useDispatch();
+const ACTIVITY = [
+  {
+    id: 'k1',
+    text: 'Mock',
+  },
+  {
+    id: 'l2',
+    text: 'Mock',
+  },
+];
 
-  const renderItem = ({item}) => <CalendarWeek weekDays={item.week} />;
+const MainScreen = () => {
+  const [selectedDay, setSelectedDay] = useState(null);
+
+  const renderItem = ({item}) => {
+    return (
+      <CalendarWeek
+        weekDays={item.week}
+        selectedItem={selectedDay}
+        onDayPress={dayNumber => {
+          setSelectedDay(dayNumber);
+        }}
+      />
+    );
+  };
+
+  const renderItemActivity = ({item}) => {
+    return <TaskCard />;
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -55,39 +77,74 @@ const MainScreen = () => {
         horizontal={true}
         snapToAlignment="start"
         decelerationRate={'fast'}
+        showsHorizontalScrollIndicator={false}
         snapToInterval={Dimensions.get('window').width}
+      />
+      <FlatList
+        style={styles.flatList_calendar}
+        data={ACTIVITY}
+        renderItem={renderItemActivity}
+        keyExtractor={item => item.id}
       />
     </SafeAreaView>
   );
 };
 
-const CalendarWeek = ({weekDays}) => (
+const CalendarWeek = ({weekDays, onDayPress, selectedItem}) => (
   <View style={styles.calendarWeek}>
     {weekDays.map(element => {
-      return <CalendarDay weekDay={element} />;
+      return (
+        <CalendarDay
+          weekDay={element}
+          onDayPress={onDayPress}
+          selectedItem={selectedItem}
+        />
+      );
     })}
   </View>
 );
 
-const CalendarDay = ({weekDay}) => (
-  <TouchableOpacity onPress={() => {}} style={styles.calendarDay}>
-    <Text style={styles.calendarDay_content_day}>{weekDay.day}</Text>
-    <Text style={styles.calendarDay_content_number}>{weekDay.number}</Text>
-    <View
-      style={{
-        borderColor: 'gray',
-        borderWidth: 1,
-        width: 8,
-        height: 8,
-        borderRadius: 8 / 2,
+const CalendarDay = ({weekDay, onDayPress, selectedItem}) => {
+  const isSelected = selectedItem === weekDay.number;
+  const selectedState = {
+    item: {
+      backgroundColor: isSelected ? '#021125' : 'white',
+      borderRadius: isSelected ? 56 : 0,
+    },
+    text: {
+      color: isSelected ? 'white' : '#2B374D',
+    },
+  };
+
+  return (
+    <TouchableOpacity
+      onPress={() => {
+        onDayPress(weekDay.number);
       }}
-    />
-  </TouchableOpacity>
-);
+      style={[styles.calendarDay, selectedState.item]}>
+      <Text style={[styles.calendarDay_content_day, selectedState.text]}>
+        {weekDay.day}
+      </Text>
+      <Text style={[styles.calendarDay_content_number, selectedState.text]}>
+        {weekDay.number}
+      </Text>
+      <View style={styles.calendarDay_content_circle_incompleted} />
+    </TouchableOpacity>
+  );
+};
+
+const TaskCard = () => {
+  return (
+    <View>
+      <Text>Barbell Chest Press</Text>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
+    backgroundColor: 'white',
   },
   selectedDay: {
     fontSize: 36,
@@ -102,13 +159,13 @@ const styles = StyleSheet.create({
   },
   calendarWeek: {
     width: Dimensions.get('window').width,
-    flex: 1,
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'space-evenly',
   },
   calendarDay: {
     paddingStart: 8,
     paddingEnd: 8,
+    paddingBottom: 8,
     alignItems: 'center',
   },
   calendarDay_content_day: {
@@ -117,7 +174,7 @@ const styles = StyleSheet.create({
     marginEnd: 8,
     marginBottom: 4,
     fontSize: 16,
-    fontWeight: '300',
+    fontWeight: '400',
   },
   calendarDay_content_number: {
     marginTop: 4,
@@ -126,6 +183,13 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  calendarDay_content_circle_incompleted: {
+    borderColor: 'gray',
+    borderWidth: 1,
+    width: 8,
+    height: 8,
+    borderRadius: 8 / 2,
   },
 });
 

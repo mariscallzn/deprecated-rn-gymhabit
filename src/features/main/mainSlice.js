@@ -1,11 +1,5 @@
 import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
-import {logger} from '../../inf/logger';
-import {
-  createWorkout,
-  queryWorkoutByDate,
-  updateESet,
-  updateTask,
-} from '../workout/repositoryWorkout';
+import {queryWorkoutByDate} from '../workout/repositoryWorkout';
 
 export const mainSlice = createSlice({
   name: 'main',
@@ -13,15 +7,9 @@ export const mainSlice = createSlice({
   reducers: {},
   extraReducers(builder) {
     builder
-      .addCase(getWorkoutByDate.pending, (_, action) => {
-        logger(`${action.type}`, null);
-      })
-      .addCase(getWorkoutByDate.fulfilled, (state, action) => {
-        logger(`${action.type}`, null);
-      })
-      .addCase(getWorkoutByDate.rejected, (_, action) => {
-        logger(`${action.type} ${action.payload}`, null);
-      });
+      .addCase(getWorkoutByDate.pending, (_, action) => {})
+      .addCase(getWorkoutByDate.fulfilled, (state, action) => {})
+      .addCase(getWorkoutByDate.rejected, (_, action) => {});
   },
 });
 

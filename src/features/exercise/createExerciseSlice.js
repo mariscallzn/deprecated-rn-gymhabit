@@ -1,5 +1,4 @@
 import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
-import {logger} from '../../inf/logger';
 import {
   createWorkout,
   queryWorkoutByDate,
@@ -26,11 +25,8 @@ export const createExerciseSlice = createSlice({
   extraReducers(builder) {
     builder
       //Get Catalog
-      .addCase(getCatalog.pending, (state, action) => {
-        logger(`${action.type}`, null);
-      })
+      .addCase(getCatalog.pending, (state, action) => {})
       .addCase(getCatalog.fulfilled, (state, action) => {
-        logger(`${action.type}`, null);
         if (state.isCatalogLoaded === false) {
           state.isCatalogLoaded = true;
           state.catalog = {
@@ -39,66 +35,36 @@ export const createExerciseSlice = createSlice({
           };
         }
       })
-      .addCase(getCatalog.rejected, (_, action) => {
-        logger(`${action.type} ${action.payload}`, null);
-      })
+      .addCase(getCatalog.rejected, (_, action) => {})
 
       //Get Exercises
-      .addCase(getExercises.pending, (_, action) => {
-        logger(`${action.type}`, null);
-      })
+      .addCase(getExercises.pending, (_, action) => {})
       .addCase(getExercises.fulfilled, (state, action) => {
-        logger(`${action.type}`, null);
         state.exercises = action.payload;
       })
-      .addCase(getExercises.rejected, (_, action) => {
-        logger(`${action.type} ${action.payload}`, null);
-      })
+      .addCase(getExercises.rejected, (_, action) => {})
 
       //Add Exercise
-      .addCase(addExercise.pending, (_, action) => {
-        logger(`${action.type}`, null);
-      })
+      .addCase(addExercise.pending, (_, action) => {})
       .addCase(addExercise.fulfilled, (state, action) => {
-        logger(`${action.type}`, null);
         state.exercises.push(action.payload);
       })
-      .addCase(addExercise.rejected, (_, action) => {
-        logger(`${action.type} ${action.payload}`, null);
-      })
+      .addCase(addExercise.rejected, (_, action) => {})
 
       //TODO: Remove it from here
-      .addCase(addWorkout.pending, (_, action) => {
-        logger(`${action.type}`, null);
-      })
-      .addCase(addWorkout.fulfilled, (state, action) => {
-        logger(`${action.type}`, null);
-      })
-      .addCase(addWorkout.rejected, (_, action) => {
-        logger(`${action.type} ${action.payload}`, null);
-      })
+      .addCase(addWorkout.pending, (_, action) => {})
+      .addCase(addWorkout.fulfilled, (state, action) => {})
+      .addCase(addWorkout.rejected, (_, action) => {})
 
       //TODO: Remove it from here
-      .addCase(updateTaskS.pending, (_, action) => {
-        logger(`${action.type}`, null);
-      })
-      .addCase(updateTaskS.fulfilled, (state, action) => {
-        logger(`${action.type}`, null);
-      })
-      .addCase(updateTaskS.rejected, (_, action) => {
-        logger(`${action.type} ${action.payload}`, null);
-      })
+      .addCase(updateTaskS.pending, (_, action) => {})
+      .addCase(updateTaskS.fulfilled, (state, action) => {})
+      .addCase(updateTaskS.rejected, (_, action) => {})
 
       //TODO: Remove it from here
-      .addCase(updateESetS.pending, (_, action) => {
-        logger(`${action.type}`, null);
-      })
-      .addCase(updateESetS.fulfilled, (state, action) => {
-        logger(`${action.type}`, null);
-      })
-      .addCase(updateESetS.rejected, (_, action) => {
-        logger(`${action.type} ${action.payload}`, null);
-      });
+      .addCase(updateESetS.pending, (_, action) => {})
+      .addCase(updateESetS.fulfilled, (state, action) => {})
+      .addCase(updateESetS.rejected, (_, action) => {});
   },
 });
 

@@ -1,14 +1,11 @@
 import {openDB, TABLES} from '../../database/gymhabitDB';
 import {v4 as uuid} from 'uuid';
-import {logger} from '../../inf/logger';
 import {
   uiEquipmentConverter,
   uiExerciseConverter,
   convertList,
   uiMuscleConverter,
 } from '../../inf/dbConverters';
-
-const TAG = 'REPO EXERCISE';
 
 export async function createExercise(exercise) {
   try {
@@ -36,10 +33,9 @@ export async function createExercise(exercise) {
       });
     });
     const uiModel = uiExerciseConverter(result);
-    logger(`${TAG}:createExercise: uiModel`, uiModel);
+
     return uiModel;
   } catch (error) {
-    logger(`${TAG}:createExercise: ${error}`, null);
     throw error;
   }
 }
@@ -50,7 +46,6 @@ export async function queryExercises() {
     const result = db.objects(TABLES.EXERCISE);
     return convertList(result, uiExerciseConverter);
   } catch (error) {
-    logger(`${TAG}:queryExercises: ${error}`, null);
     throw error;
   }
 }
@@ -64,7 +59,6 @@ export async function queryCatalog() {
     const uiEquipmentList = uiEquipmentConverter(rEquipment);
     return uiCatalogConverter(uiMusclesList, uiEquipmentList);
   } catch (error) {
-    logger(`${TAG}:createExercise: ${error}`, null);
     throw error;
   }
 }
