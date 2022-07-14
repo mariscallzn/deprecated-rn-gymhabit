@@ -95,6 +95,7 @@ const CalendarWeek = ({weekDays, onDayPress, selectedItem}) => (
     {weekDays.map(element => {
       return (
         <CalendarDay
+          key={element.number}
           weekDay={element}
           onDayPress={onDayPress}
           selectedItem={selectedItem}
