@@ -5,6 +5,7 @@ import {
   updateESet,
   updateTask,
 } from '../workout/repositoryWorkout';
+import {workoutRepository} from '../workout/wipRepositoryWorkout';
 import {
   createExercise,
   queryCatalog,
@@ -53,8 +54,12 @@ export const createExerciseSlice = createSlice({
 
       //TODO: Remove it from here
       .addCase(addWorkout.pending, (_, action) => {})
-      .addCase(addWorkout.fulfilled, (state, action) => {})
-      .addCase(addWorkout.rejected, (_, action) => {})
+      .addCase(addWorkout.fulfilled, (state, action) => {
+        console.log(`AddWorkout: ${JSON.stringify(action.payload)}`);
+      })
+      .addCase(addWorkout.rejected, (_, action) => {
+        console.error(action.payload);
+      })
 
       //TODO: Remove it from here
       .addCase(updateTaskS.pending, (_, action) => {})
@@ -85,7 +90,7 @@ export const addWorkout = createAsyncThunk(
   'workouts/addWorkout',
   async (workout, {rejectWithValue}) => {
     try {
-      const result = await createWorkout(workout);
+      const result = await workoutRepository.createWorkout(workout);
       return result;
     } catch (error) {
       return rejectWithValue(error.message);
